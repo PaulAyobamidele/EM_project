@@ -1,8 +1,10 @@
 # importing data
-data <- read.csv("final_project/project.csv")
+data <- read.csv("project.csv")
 View(data)
 summary(data)
 
+
+head(data)
 # deleting first 2 colums
 new_data <- data[-c(1, 2), ]
 View(new_data)
@@ -141,4 +143,79 @@ new_data3$No_or_YesBlock_1 <- as.factor(new_data3$No_or_YesBlock_1)
 
 linear_regression <- lm(overall_student_satisfaction ~ No_or_YesBlock_1, data = new_data3)
 
+
+
+barplot(table(no_block$reson_on_lack), main = "Frequency of Reasons for Low Engagement", col = "#0eeb6a", xlab = "Reason", ylab = "Frequency")
+
+
+boxplot(nan_overall_expY_1 ~ aware_with_nanY, data = yes_block, main = "Boxplot of Overall Satisfaction by Awareness", col = c("orange", "green"))
+
+
+
+cor_matrix <- cor(yes_block[, c("stress_manageY_1", "Satisf_NA_1", "time_manageY_1", "satis_with_communiY_1", "nan_grades_1", "nan_overall_expY_1")])
+corrplot::corrplot(cor_matrix, method = "circle")
+
+
+
 summary(linear_regression)
+
+
+head(new_data3)
+
+
+# Variable names
+
+print(names(new_data3))
+
+
+names(new_data3) <- c("consent", "category_student_support", "satisfaction_non-academic-support", "stress_level_support", "time_management_support", "satisfaction_communication_channels", "awareness_support_services", "grade_support_services", "Ysatisfaction_overall_academic_experience", "suggest_new_support", "new_support_suggestion", "reason_for_lack_of_engagement", "other_reasons_for_lack", "will_engagement_impact_performance", "Nsatisfaction_overall_academic_experience", "satisfaction_academic_performance", "awareness_non-academic-support", "prospect_of_engagement_academic_improvement", "suggestion_new_academic_support", "age", "gender", "years_spent", "local_or_inter", "school_department", "major", "overall_student_satisfaction")
+
+
+print(names(new_data3))
+
+View(new_data3)
+
+
+cleaned_data <- new_data3[, c(2, 21:26)]
+
+cleaned_data2 <- cleaned_data %>%
+    group_by(gender, category_student_support, years_spent) %>%
+    summarise(
+        mean_satisfaction = mean(overall_student_satisfaction),
+        median_satisfaction = median(overall_student_satisfaction),
+        min_satisfaction = min(overall_student_satisfaction),
+        max_satisfaction = max(overall_student_satisfaction),
+        count = n()
+    )
+
+View(cleaned_data2)
+
+
+cleaned_data3 <- cleaned_data %>%
+    group_by(gender, category_student_support) %>%
+    summarise(
+        mean_satisfaction = mean(overall_student_satisfaction),
+        count = n()
+    )
+
+
+View(cleaned_data3)
+
+
+
+library(ggplot2)
+
+
+ggplot(cleaned_data2, aes(x = gender, y = mean_satisfaction, fill = category_student_support)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    labs(title = "Mean Satisfaction by Gender and Category of Student Support", x = "Gender", y = "Mean Satisfaction")
+
+
+ggplot(cleaned_data, aes(x = years_spent, y = overall_student_satisfaction)) +
+    geom_boxplot() +
+    labs(title = "Satisfaction by Years Spent", x = "Years Spent", y = "Overall Satisfaction")
+
+
+ggplot(cleaned_data2, aes(x = count, y = mean_satisfaction)) +
+    geom_point() +
+    labs(title = "Scatter Plot of Overall Satisfaction against Count of Observations", x = "Count", y = "Mean Satisfaction")
