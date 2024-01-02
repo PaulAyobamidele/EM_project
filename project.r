@@ -230,10 +230,6 @@ View(cleaned_data4)
 # Plotting
 library(ggplot2)
 
-
-
-
-
 ggplot(cleaned_data2, aes(x = gender, y = mean_satisfaction, fill = category_student_support)) +
     geom_bar(stat = "identity", position = "dodge") +
     labs(title = "Mean Satisfaction by Gender and Category of Student Support", x = "Gender", y = "Mean Satisfaction")
