@@ -123,7 +123,7 @@ new_data3 <- new_data3 %>%
 View(new_data3)
 
 
-yes_block$nan_overall_expY_1
+
 
 new_data3 <- new_data3 %>%
     mutate(
@@ -177,6 +177,18 @@ View(new_data3)
 
 
 cleaned_data <- new_data3[, c(2, 21:26)]
+View(cleaned_data)
+
+cleaned_data <- cleaned_data %>%
+    mutate(
+        local_or_inter = case_when(
+            grepl("local", local_or_inter, ignore.case = TRUE) ~ "Local",
+            grepl("international", local_or_inter, ignore.case = TRUE) ~ "International"
+        )
+    )
+
+
+View(cleaned_data)
 
 cleaned_data2 <- cleaned_data %>%
     group_by(gender, category_student_support, years_spent) %>%
@@ -202,8 +214,24 @@ cleaned_data3 <- cleaned_data %>%
 View(cleaned_data3)
 
 
+cleaned_data4 <- cleaned_data %>%
+    group_by(local_or_inter, category_student_support) %>%
+    summarise(
+        mean_satisfaction = mean(overall_student_satisfaction),
+        count = n()
+    )
 
+
+View(cleaned_data4)
+
+
+
+
+# Plotting
 library(ggplot2)
+
+
+
 
 
 ggplot(cleaned_data2, aes(x = gender, y = mean_satisfaction, fill = category_student_support)) +
@@ -218,4 +246,16 @@ ggplot(cleaned_data, aes(x = years_spent, y = overall_student_satisfaction)) +
 
 ggplot(cleaned_data2, aes(x = count, y = mean_satisfaction)) +
     geom_point() +
-    labs(title = "Scatter Plot of Overall Satisfaction against Count of Observations", x = "Count", y = "Mean Satisfaction")
+    labs(title = "Scatter Plot of Overall Satisfaction against Count of Observations", x = "Count", y = "Mean Satisfaction") +
+    geom_smooth(
+        method = "lm", level = 0.97
+    )
+
+
+ggplot(cleaned_data4, aes(x = local_or_inter, y = mean_satisfaction, color = category_student_support, fill = category_student_support)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    labs(
+        title = "Barplot of the Mean Satisfaction against Category of Student",
+        x = "Local or International Student (Student Category)",
+        y = "Mean Satisfaction"
+    )
