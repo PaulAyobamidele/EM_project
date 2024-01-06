@@ -94,6 +94,8 @@ summary(no_block)
 
 View(yes_block)
 View(no_block)
+
+
 mean_overall_satisfaction_yes_block <- mean(yes_block$nan_overall_expY_1)
 mean_overall_satisfaction_yes_block
 
@@ -110,7 +112,12 @@ mean_overall_satisfaction_no_block
 t.test_overall_experience <- t.test(yes_block$nan_overall_expY_1, no_block$satis_on_experience_1, alternative = "two.sided")
 t.test_overall_experience
 
+?t.test()
 
+View(new_data3)
+
+
+ncol(new_data3)
 new_data3$No_or_YesBlock_1 <- as.numeric(new_data3$No_or_YesBlock_1)
 class(new_data3$No_or_YesBlock_1)
 
@@ -130,8 +137,12 @@ new_data3 <- new_data3 %>%
         overall_student_satisfaction = ifelse(No_or_YesBlock_1 == "Yes", nan_overall_expY_1, satis_on_experience_1)
     )
 
+
+View(new_data3)
+
 new_data3$overall_student_satisfaction <- as.numeric(new_data3$overall_student_satisfaction)
 new_data3$overall_student_satisfaction
+
 
 
 
@@ -141,7 +152,15 @@ View(new_data3)
 new_data3$No_or_YesBlock_1 <- as.factor(new_data3$No_or_YesBlock_1)
 
 
-linear_regression <- lm(overall_student_satisfaction ~ No_or_YesBlock_1, data = new_data3)
+# linear_regression <- lm(overall_student_satisfaction ~ No_or_YesBlock_1, data = new_data3)
+
+linear_regression <- lm(overall_student_satisfaction ~ category_student_support, data = new_data3)
+
+
+linear_regression
+
+
+summary(linear_regression)
 
 
 
@@ -167,7 +186,9 @@ head(new_data3)
 
 print(names(new_data3))
 
+View(new_data3)
 
+ncol(new_data3)
 names(new_data3) <- c("consent", "category_student_support", "satisfaction_non-academic-support", "stress_level_support", "time_management_support", "satisfaction_communication_channels", "awareness_support_services", "grade_support_services", "Ysatisfaction_overall_academic_experience", "suggest_new_support", "new_support_suggestion", "reason_for_lack_of_engagement", "other_reasons_for_lack", "will_engagement_impact_performance", "Nsatisfaction_overall_academic_experience", "satisfaction_academic_performance", "awareness_non-academic-support", "prospect_of_engagement_academic_improvement", "suggestion_new_academic_support", "age", "gender", "years_spent", "local_or_inter", "school_department", "major", "overall_student_satisfaction")
 
 
@@ -255,3 +276,16 @@ ggplot(cleaned_data4, aes(x = local_or_inter, y = mean_satisfaction, color = cat
         x = "Local or International Student (Student Category)",
         y = "Mean Satisfaction"
     )
+
+
+
+# 1. T-Test for Overall Satisfaction
+# To examine the difference in academic satisfaction between students receiving non-academic support and those not receiving such support, a Welch Two-Sample t-test were conducted to assess the differences in overall satisfaction scores between two groups: those who received support services ("yes_block") and those who did not ("no_block").The analysis revealed a statistically significant difference in overall satisfaction scores between the two groups (t = 2.5257, df = 30.067, p-value = 0.01705).The mean overall satisfaction score for the support group was 5.22, while the mean for the non-support group was 4.27. This result suggests that the provision of support services has a discernible impact on overall student satisfaction.
+
+
+# 2. Linear Regression Analysis
+
+# A linear regression model was employed to explore the relationship between overall student satisfaction and the category of student support. The results indicate that the category of student support significantly predicts overall student satisfaction (p-value = 0.00493). The model suggests that, on average, students receiving support services exhibit a higher overall satisfaction score (intercept = 4.2727, category_student_supportYes coefficient = 0.9514). The adjusted R-squared value of 0.08539 indicates that the model explains approximately 8.54% of the variance in overall satisfaction.
+
+
+# The findings suggest that the provision of support services significantly influences overall student satisfaction. Moreover, the linear regression model highlights the predictive power of the category of student support in explaining variations in satisfaction scores. These insights underscore the importance of targeted support services in enhancing the overall academic experience.
